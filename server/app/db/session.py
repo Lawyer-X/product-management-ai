@@ -3,6 +3,7 @@ from functools import lru_cache
 from typing import Annotated
 
 from fastapi import Depends
+from sqlalchemy import URL, make_url
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -11,6 +12,19 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from app.config import get_settings
+
+
+def _async_url(raw: str) -> URL:
+    """Normalize a connection string to the async psycopg driver.
+
+    Supabase hands out plain `postgresql://...` strings, which SQLAlchemy maps
+    to the (sync, uninstalled) psycopg2 dialect. Force the `postgresql+psycopg`
+    driver so a copy-pasted Supabase URL works without manual editing.
+    """
+    url = make_url(raw)
+    if url.drivername in ("postgresql", "postgres", "postgresql+psycopg2"):
+        url = url.set(drivername="postgresql+psycopg")
+    return url
 
 
 @lru_cache
@@ -29,7 +43,7 @@ def get_engine() -> AsyncEngine:
         connect_args["prepare_threshold"] = None
 
     return create_async_engine(
-        settings.database_url,
+        _async_url(settings.database_url),
         echo=settings.debug,
         pool_pre_ping=True,
         connect_args=connect_args,
