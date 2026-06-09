@@ -20,15 +20,31 @@ if config.config_file_name is not None:
 # alembic.ini, so migrations use the same Supabase connection as the app.
 from app.config import get_settings
 from app.db.base import Base
+from app.db.session import _async_url
 
 # Import the models package so every model registers with Base.metadata
 # before autogenerate inspects it.
-import app.models  # noqa: F401
+import app.db.models  # noqa: F401
 
-config.set_main_option("sqlalchemy.url", get_settings().database_url)
+config.set_main_option(
+    "sqlalchemy.url", _async_url(get_settings().database_url).render_as_string(hide_password=False)
+)
 
 # add your model's MetaData object here for 'autogenerate' support
 target_metadata = Base.metadata
+
+
+def include_object(object, name, type_, reflected, compare_to):
+    """Keep Alembic from managing Supabase-owned tables.
+
+    Tables like `auth.users` live in non-public schemas that Supabase owns; we
+    declare stubs for them only so foreign keys resolve. Excluding any table
+    outside the default (public) schema prevents autogenerate from emitting
+    spurious CREATE/DROP statements for them.
+    """
+    if type_ == "table" and object.schema is not None and object.schema != "public":
+        return False
+    return True
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -54,6 +70,7 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        include_object=include_object,
     )
 
     with context.begin_transaction():
@@ -61,7 +78,11 @@ def run_migrations_offline() -> None:
 
 
 def do_run_migrations(connection: Connection) -> None:
-    context.configure(connection=connection, target_metadata=target_metadata)
+    context.configure(
+        connection=connection,
+        target_metadata=target_metadata,
+        include_object=include_object,
+    )
 
     with context.begin_transaction():
         context.run_migrations()
