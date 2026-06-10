@@ -1,14 +1,8 @@
 from pydantic import BaseModel
-
-class CreateWorkspaceInput(BaseModel):
-    repo_id: str
-    repo_name: str
-    project_id: str
-    project_name: str
-    context: str
+from typing import List
 
 
-class CreateWorkspaceResponse(BaseModel):
+class Workspace(BaseModel):
     id: str
     user_id: str
     repo_id: str
@@ -20,3 +14,22 @@ class CreateWorkspaceResponse(BaseModel):
     created_at: str
     updated_at: str
 
+
+class CreateWorkspaceInput(BaseModel):
+    repo_id: str
+    repo_name: str
+    project_id: str
+    project_name: str
+    context: str
+
+
+class CreateWorkspaceResponse(Workspace):
+    pass
+
+
+class GetAllWorkspaceInput(BaseModel):
+    user_id: str
+
+
+class GetAllWorkspaceResponse(BaseModel):
+    workspaces: List[Workspace]

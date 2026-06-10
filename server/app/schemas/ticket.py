@@ -13,11 +13,14 @@ class Ticket(BaseModel):
     created_at: datetime
     updated_at: datetime
 
+
 class CreateTicketInput(BaseModel):
     prompt: str
 
+
 class CreateTicketResponse(BaseModel):
     tickets: List[Ticket]
+
 
 class UpdateTicketInput(BaseModel):
     title: str | None
@@ -25,3 +28,11 @@ class UpdateTicketInput(BaseModel):
 
 UpdateTicketResponse = Ticket
 
+
+class PushTicketInput(BaseModel):
+    ticket_ids: List[UUID]
+
+
+class PushTicketResponse(BaseModel):
+    pushed: List[Ticket]
+    failed: List[Ticket]
