@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from app.db.session import SessionDep
-from app.schemas.ticket import CreateTicketInput, CreateTicketResponse, UpdateTicketInput, UpdateTicketResponse, PushTicketInput, PushTicketResponse
+from app.schemas.ticket import CreateTicketInput, CreateTicketResponse, UpdateTicketInput, UpdateTicketResponse, PushTicketInput, PushTicketResponse, GetAllTicketInput, GetAllTicketResponse
 from uuid import UUID
 
 router = APIRouter(tags=["ticket"], prefix="/workspaces/{workspace_id}",)
@@ -15,6 +15,10 @@ async def update_ticket(workspace_id: UUID, ticket_id: UUID, req: UpdateTicketIn
 
 @router.post("/tickets/push", response_model=PushTicketResponse)
 async def push_ticket(workspace_id: UUID, req: PushTicketInput):
+    pass
+
+@router.get("/tickets", reponse_model=GetAllTicketResponse)
+async def get_all_tickets(workspace_id: UUID, req: GetAllTicketInput):
     pass
 
 

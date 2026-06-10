@@ -36,3 +36,10 @@ class PushTicketInput(BaseModel):
 class PushTicketResponse(BaseModel):
     pushed: List[Ticket]
     failed: List[Ticket]
+
+
+class GetAllTicketInput(BaseModel):
+    user_id: UUID
+
+class GetAllTicketResponse(BaseModel):
+    tickets: List[Ticket]
