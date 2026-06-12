@@ -2,6 +2,13 @@ from pydantic import BaseModel
 from typing import List
 from datetime import datetime
 from uuid import UUID
+from enum import StrEnum
+
+
+class TicketStatus(StrEnum):
+    PROCESSING = "processing"
+    PUSHED = "pushed"
+
 
 class Ticket(BaseModel):
     id: UUID
@@ -9,7 +16,7 @@ class Ticket(BaseModel):
     title: str
     description: str
     github_issue_id: str | None
-    status: str
+    status: TicketStatus
     created_at: datetime
     updated_at: datetime
 
@@ -34,12 +41,8 @@ class PushTicketInput(BaseModel):
 
 
 class PushTicketResponse(BaseModel):
-    pushed: List[Ticket]
-    failed: List[Ticket]
-
-
-class GetAllTicketInput(BaseModel):
-    user_id: UUID
+    pushed: List[UUID]
+    failed: List[UUID]
 
 class GetAllTicketResponse(BaseModel):
     tickets: List[Ticket]
