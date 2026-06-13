@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from app.db.models import Workspace
+    from app.models import Workspace
 
 class TicketStatus(str, Enum):
     draft = "draft"

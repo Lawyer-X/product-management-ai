@@ -1,7 +1,5 @@
-"""ORM models package.
+from app.models.auth import auth_users  # noqa: F401  registers the auth.users stub
+from app.models.workspace import Workspace
+from app.models.ticket import Ticket
 
-Import every model module here so Alembic autogenerate (and SQLAlchemy's
-mapper configuration) can discover them via ``Base.metadata``. For example:
-
-    from app.models.project import Project  # noqa: F401
-"""
+__all__ = ["Workspace", "Ticket", "auth_users"]

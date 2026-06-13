@@ -24,7 +24,7 @@ from app.db.session import _async_url
 
 # Import the models package so every model registers with Base.metadata
 # before autogenerate inspects it.
-import app.db.models  # noqa: F401
+import app.models  # noqa: F401
 
 config.set_main_option(
     "sqlalchemy.url", _async_url(get_settings().database_url).render_as_string(hide_password=False)

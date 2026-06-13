@@ -9,7 +9,7 @@ from app.db.session import get_engine
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(_: FastAPI):
     # Startup logic goes here (db connections, model loading, etc.).
     settings = get_settings()
     yield

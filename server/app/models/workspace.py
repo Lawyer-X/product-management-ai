@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from app.db.models.ticket import Ticket
+    from app.models.ticket import Ticket
 
 
 class Workspace(Base):
